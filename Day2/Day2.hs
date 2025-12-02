@@ -15,40 +15,38 @@ group' n l
   | otherwise = [l]
 
 parseRange :: String -> [Integer]
-parseRange r =
-  let (x : xs : _) = wordsOn (== '-') r
-      start = read x :: Integer
-      end = read xs :: Integer
-   in [start .. end]
+parseRange r = [start .. end]
+  where (x : xs : _) = wordsOn (== '-') r
+        start = read x :: Integer
+        end = read xs :: Integer
 
 isRepeatingTwice :: Integer -> Bool
 isRepeatingTwice i
-  | odd (length s) = False
   | x == y = True
   | otherwise = False
   where s = show i
         (x,y) = splitAt (length s `div` 2) s
 
-isRepeating :: Int -> String -> Bool
-isRepeating _ [] = True
-isRepeating j s
+isRepeating :: Int -> Integer -> Bool
+isRepeating j i
   | j > h = False
   | n == 0 = True
-  | otherwise = isRepeating (j+1) s
-  where
+  | otherwise = isRepeating (j+1) i
+  where s = show i
         h = length s `div` 2
         (x:xs) = group' j s
         n = length $ filter (/=x) xs
 
-part1 :: String -> Integer
-part1 = sum . concat . map (filter isRepeatingTwice . parseRange) . wordsOn (== ',')
+part1 :: [[Integer]] -> Integer
+part1 = sum . concat . map (filter isRepeatingTwice)
 
-part2 :: String -> Integer
-part2 = sum . concat . map (filter (isRepeating 1 . show) . parseRange) . wordsOn (== ',')
+part2 :: [[Integer]] -> Integer
+part2 = sum . concat . map (filter (isRepeating 1))
 
 main = do
   file <- readFile "input.txt"
+  let input = map parseRange $ wordsOn (== ',') file
   putStrLn "Part 1"
-  print $ part1 file
+  print $ part1 input
   putStrLn "Part 2"
-  print $ part2 file
+  print $ part2 input
