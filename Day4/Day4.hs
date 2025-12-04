@@ -41,18 +41,15 @@ move m
   where
     (x,xs) =  Map.partitionWithKey (canMove m) $ m
 
-part1 :: String -> Int
-part1 s = Map.size . Map.filterWithKey (canMove m) $ m
-  where m = Map.filter (/= '.') . Map.fromList . concat . makeGrid $ lines s
-
-part2 :: String -> Int
-part2 s = move . Map.filter (/= '.') . Map.fromList . concat . makeGrid $ lines s
+part1 :: Map.Map Coord Char -> Int
+part1 m = Map.size . Map.filterWithKey (canMove m) $ m
 
 main :: IO ()
 main = do
   args <- getArgs
   file <- readFile $ head args
+  let m = Map.filter (/= '.') . Map.fromList . concat . makeGrid $ lines file
   putStrLn "Part 1"
-  print $ part1 file
+  print $ part1 m
   putStrLn "Part 2"
-  print $ part2 file
+  print $ move m
