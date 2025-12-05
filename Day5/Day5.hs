@@ -16,13 +16,6 @@ parseRangeTuple r = (start, end)
     start = read x :: Integer
     end = read xs :: Integer
 
-parseRange :: String -> [Integer]
-parseRange r = [start .. end]
-  where
-    (x : xs : _) = wordsOn (== '-') r
-    start = read x :: Integer
-    end = read xs :: Integer
-
 inRanges :: [(Integer, Integer)] -> Integer -> Bool
 inRanges [] _ = False
 inRanges ((s, e) : xs) i
