@@ -22,14 +22,6 @@ makeGrid rows = makeGrid' y r : makeGrid rs
     (r : rs) = rows
     y = length rows - 1
 
-buildTree :: Coord -> Tree.Tree Coord -> Tree.Tree Coord
-buildTree c@(y, x) t
-  | isMember = Tree.insert (y, x + 1) $ Tree.insert (y, x - 1) t
-  | otherwise = t
-  where
-    isMember = Tree.memberBy (compare `on` snd) c t
-    Just b = Tree.findBy (compare `on` snd) c t
-
 split' :: Coord -> (Int, [Int]) -> (Int, [Int])
 split' (y, x) acc@(c, b)
   | x `elem` b = (c + 1, x + 1 : x - 1 : filter (/= x) b)

@@ -5,13 +5,7 @@ module Tree
     insertWith,
     remove,
     size,
-    layers,
-    leafs,
     find,
-    findBy,
-    member,
-    memberBy,
-    counts,
   )
 where
 
@@ -21,11 +15,7 @@ singleton :: a -> Tree a
 singleton x = Node (1, x) EmptyTree EmptyTree
 
 insert :: (Ord a) => a -> Tree a -> Tree a
-insert x EmptyTree = singleton x
-insert x (Node (c, a) left right)
-  | x == a = Node (c + 1, x) left right
-  | x < a = Node (c, a) (insert x left) right
-  | otherwise = Node (c, a) left (insert x right)
+insert = insertWith 1
 
 insertWith :: (Ord a) => Int -> a -> Tree a -> Tree a
 insertWith n x EmptyTree = insertWith (n - 1) x $ singleton x
@@ -45,19 +35,6 @@ size :: Tree a -> Int
 size EmptyTree = 0
 size (Node (c, _) l r) = c + size l + size r
 
-layers :: Tree a -> Int
-layers EmptyTree = 0
-layers (Node _ l r) = 1 + max (layers l) (layers r)
-
-leafs :: Tree a -> [a]
-leafs EmptyTree = []
-leafs (Node (_, a) EmptyTree EmptyTree) = [a]
-leafs (Node _ l r) = leafs l ++ leafs r
-
-root :: Tree a -> Maybe a
-root EmptyTree = Nothing
-root (Node (_, a) _ _) = Just a
-
 findBy :: (Ord a) => (a -> a -> Ordering) -> a -> Tree a -> Maybe (Int, a)
 findBy _ _ EmptyTree = Nothing
 findBy f x (Node (c, a) l r) = case f x a of
@@ -75,7 +52,3 @@ memberBy f x t = case findBy f x t of
 
 member :: (Ord a) => a -> Tree a -> Bool
 member = memberBy compare
-
-counts :: Tree a -> [Int]
-counts EmptyTree = []
-counts (Node (c, _) l r) = [c] ++ counts l ++ counts r
